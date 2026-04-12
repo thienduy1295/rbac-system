@@ -1,0 +1,38 @@
+import jwt from "jsonwebtoken";
+
+const ACCESS_SECRET = process.env.JWT_SECRET!;
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
+const ACCESS_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES_IN || "15m";
+const REFRESH_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
+
+export interface JWTPayload {
+  userId: string;
+  email: string;
+  role: string;
+}
+
+// Access Token
+export function signAccessToken(payload: JWTPayload): string {
+  return jwt.sign(payload, ACCESS_SECRET, {
+    expiresIn: ACCESS_EXPIRES,
+  } as jwt.SignOptions);
+}
+
+// Refresh Token
+export function signRefreshToken(payload: JWTPayload): string {
+  return jwt.sign(payload, REFRESH_SECRET, {
+    expiresIn: REFRESH_EXPIRES,
+  } as jwt.SignOptions);
+}
+
+export function verifyRefreshToken(token: string): JWTPayload {
+  return jwt.verify(token, REFRESH_SECRET) as JWTPayload;
+}
+
+// Helper: create 2 token at the same time
+export function signTokens(payload: JWTPayload) {
+  return {
+    accessToken: signAccessToken(payload),
+    refreshToken: signRefreshToken(payload),
+  };
+}
