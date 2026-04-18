@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { findUserByEmail } from "@/repositories/user.repository";
+import { createUser, findUserByEmail } from "@/repositories/user.repository";
 import { IRole } from "@/models/Role";
 import {
   createRefreshToken,
@@ -11,6 +11,7 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "@/lib/jwt";
+import { findRoleByName } from "@/repositories/role.repository";
 
 // ── Kiểu trả về ───────────────────────────────────────────
 type AuthResult =
@@ -55,6 +56,56 @@ export async function signInService(
     accessToken,
     refreshToken,
     user: { name: user.name, email: user.email, role },
+  };
+}
+
+// ── Sign Up ───────────────────────────────────────────────
+export async function signUpService(
+  name: string,
+  email: string,
+  password: string,
+): Promise<AuthResult> {
+  // Kiểm tra email đã tồn tại chưa
+  const existing = await findUserByEmail(email);
+  if (existing) {
+    return { success: false, message: "Email này đã được sử dụng" };
+  }
+
+  // Lấy role mặc định là "user"
+  const role = await findRoleByName("user");
+  if (!role) {
+    return {
+      success: false,
+      message: "Hệ thống chưa được khởi tạo, vui lòng liên hệ admin",
+    };
+  }
+
+  // Hash password
+  const hashed = await bcrypt.hash(password, 10);
+
+  // Tạo user
+  const user = await createUser({
+    name,
+    email,
+    password: hashed,
+    roleId: role._id,
+  });
+
+  const payload = {
+    userId: user._id.toString(),
+    email: user.email,
+    role: role.name,
+  };
+  const accessToken = signAccessToken(payload);
+  const refreshToken = signRefreshToken(payload);
+
+  await createRefreshToken(user._id.toString(), refreshToken);
+
+  return {
+    success: true,
+    accessToken,
+    refreshToken,
+    user: { name: user.name, email: user.email, role: role.name },
   };
 }
 

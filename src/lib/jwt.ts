@@ -11,14 +11,18 @@ export interface JWTPayload {
   role: string;
 }
 
-// Access Token
+// ─── Access Token ─────────────────────────────────────────
 export function signAccessToken(payload: JWTPayload): string {
   return jwt.sign(payload, ACCESS_SECRET, {
     expiresIn: ACCESS_EXPIRES,
   } as jwt.SignOptions);
 }
 
-// Refresh Token
+export function verifyAccessToken(token: string): JWTPayload {
+  return jwt.verify(token, ACCESS_SECRET) as JWTPayload;
+}
+
+// ─── Refresh Token ────────────────────────────────────────
 export function signRefreshToken(payload: JWTPayload): string {
   return jwt.sign(payload, REFRESH_SECRET, {
     expiresIn: REFRESH_EXPIRES,
@@ -29,7 +33,7 @@ export function verifyRefreshToken(token: string): JWTPayload {
   return jwt.verify(token, REFRESH_SECRET) as JWTPayload;
 }
 
-// Helper: create 2 token at the same time
+// ─── Helper: tạo cả 2 token cùng lúc ─────────────────────
 export function signTokens(payload: JWTPayload) {
   return {
     accessToken: signAccessToken(payload),
