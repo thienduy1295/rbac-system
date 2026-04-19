@@ -2,12 +2,18 @@ import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { LogoutButton } from "@/components/logout-button";
 import { NavTabs } from "@/components/nav-tabs";
+import { ProfileButton } from "@/components/profile-button";
+import { getSession } from "@/lib/auth";
+import { findUserById } from "@/repositories/user.repository";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+  const user = session ? await findUserById(session.userId) : null;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border">
@@ -27,8 +33,9 @@ export default function DashboardLayout({
           {/* Nav — căn giữa */}
           <NavTabs />
 
-          {/* Logout — chiếm 1/3 bên phải, căn phải */}
+          {/* Profile + Logout — chiếm 1/3 bên phải, căn phải */}
           <div className="flex-1 flex justify-end items-center gap-2">
+            {user && <ProfileButton name={user.name} />}
             <div className="w-px h-4 bg-border" />
             <LogoutButton />
           </div>

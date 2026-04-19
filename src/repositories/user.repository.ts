@@ -118,6 +118,33 @@ export async function findUsersByGroupId(
     .lean() as unknown as SerializedUser[];
 }
 
+export async function updateUserName(
+  userId: string,
+  name: string,
+): Promise<IUser | null> {
+  await connectDB();
+  return User.findByIdAndUpdate(userId, { name }, { new: true });
+}
+
+export async function updateUserPassword(
+  userId: string,
+  hashedPassword: string,
+): Promise<IUser | null> {
+  await connectDB();
+  return User.findByIdAndUpdate(
+    userId,
+    { password: hashedPassword },
+    { new: true },
+  );
+}
+
+export async function findUserByIdWithPassword(
+  id: string,
+): Promise<IUser | null> {
+  await connectDB();
+  return User.findById(id).select("+password");
+}
+
 export async function findUsersPaginated(
   state: TableState,
 ): Promise<PaginatedResult<SerializedUser>> {
