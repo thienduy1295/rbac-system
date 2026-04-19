@@ -14,7 +14,7 @@ type LeanRole = { name: string };
 
 type LeanPermission = { name: string };
 
-type LeanGroup = { permissions: LeanPermission[] };
+type LeanGroup = { _id: Types.ObjectId; permissions: LeanPermission[] };
 
 type UserLeanWithRole = {
   groups: Types.ObjectId[];
@@ -31,6 +31,22 @@ type UserLeanWithGroupsPopulated = {
 };
 
 // ── Exported functions ─────────────────────────────────────────────────────
+
+export function checkPermission(
+  userPermissions: string[],
+  permission: string,
+  isSuperAdmin: boolean,
+): boolean {
+  if (isSuperAdmin) return true;
+  return userPermissions.includes(permission);
+}
+
+export async function getUserRole(userId: string) {
+  await connectDB();
+  const user = await User.findById(userId).populate("role").lean();
+  if (!user) return null;
+  return user.role;
+}
 
 // Lấy toàn bộ permission names của user (dùng chung cho mọi check)
 export async function getUserPermissions(userId: string): Promise<string[]> {
@@ -56,6 +72,45 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
   }
 
   return Array.from(permissions);
+}
+
+// Lấy role + groupIds + permissionNames trong 1 DB query duy nhất
+export async function getUserContext(userId: string): Promise<{
+  role: LeanRole | null;
+  groupIds: string[];
+  permissionNames: string[];
+  isSuperAdmin: boolean;
+}> {
+  await connectDB();
+
+  const user = (await User.findById(userId)
+    .populate("role")
+    .populate({ path: "groups", populate: { path: "permissions" } })
+    .lean()) as UserLeanWithGroupsPopulated | null;
+
+  if (!user) {
+    return { role: null, groupIds: [], permissionNames: [], isSuperAdmin: false };
+  }
+
+  const isSuperAdmin = user.role?.name === "super_admin";
+
+  let permissionNames: string[];
+  if (isSuperAdmin) {
+    const allPermissions = await Permission.find().lean();
+    permissionNames = allPermissions.map((p) => p.name);
+  } else {
+    const perms = new Set<string>();
+    for (const group of user.groups ?? []) {
+      for (const perm of group.permissions ?? []) {
+        perms.add(perm.name);
+      }
+    }
+    permissionNames = Array.from(perms);
+  }
+
+  const groupIds = (user.groups ?? []).map((g) => g._id.toString());
+
+  return { role: user.role ?? null, groupIds, permissionNames, isSuperAdmin };
 }
 
 // Check 1 permission — dùng 1 DB query duy nhất
@@ -140,7 +195,9 @@ export async function canAssignPermissions(
 // Lấy groupIds user đang thuộc về
 export async function getUserGroupIds(userId: string): Promise<string[]> {
   await connectDB();
-  const user = (await User.findById(userId).lean()) as UserLeanGroupsOnly | null;
+  const user = (await User.findById(
+    userId,
+  ).lean()) as UserLeanGroupsOnly | null;
   if (!user) return [];
   return (user.groups ?? []).map((g) => g.toString());
 }

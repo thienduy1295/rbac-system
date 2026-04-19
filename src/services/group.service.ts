@@ -2,10 +2,14 @@ import {
   createGroup,
   findGroupByName,
   findAllGroups,
+  findGroupsPaginated,
   updateGroup,
   findGroupById,
   findGroupsByParentId,
+  findAllDescendantIds,
+  deleteGroupById,
 } from "@/repositories/group.repository";
+import { PaginatedResult, TableState } from "@/types/table";
 import { findAllPermissions } from "@/repositories/permission.repository";
 import {
   addUsersToGroup,
@@ -92,8 +96,7 @@ async function cascadePermissionsToChildren(
       parentPermissionIds.includes(pid),
     );
 
-    const updatedBy =
-      child.updatedBy?.toString() ?? child.createdBy.toString();
+    const updatedBy = child.updatedBy?.toString() ?? child.createdBy.toString();
 
     await updateGroup(child._id.toString(), {
       name: child.name,
@@ -113,7 +116,15 @@ export async function getAllGroupsService(): Promise<SerializedGroup[]> {
   return findAllGroups();
 }
 
-export async function getAllPermissionsService(): Promise<SerializedPermission[]> {
+export async function getGroupsPaginatedService(
+  state: TableState,
+): Promise<PaginatedResult<SerializedGroup>> {
+  return findGroupsPaginated(state);
+}
+
+export async function getAllPermissionsService(): Promise<
+  SerializedPermission[]
+> {
   return findAllPermissions();
 }
 
@@ -121,4 +132,23 @@ export async function getGroupUsersService(
   groupId: string,
 ): Promise<SerializedUser[]> {
   return findUsersByGroupId(groupId);
+}
+
+export async function deleteGroupService(
+  id: string,
+): Promise<{ success: true } | { success: false; message: string }> {
+  const group = await findGroupById(id);
+  if (!group) return { success: false, message: "Group không tồn tại" };
+
+  // Lấy tất cả group con/cháu cần xóa
+  const descendantIds = await findAllDescendantIds(id);
+  const allIds = [id, ...descendantIds];
+
+  // Xóa tất cả groups và remove users khỏi groups đó
+  for (const groupId of allIds) {
+    await removeUsersFromGroup([], groupId); // remove tất cả users
+    await deleteGroupById(groupId);
+  }
+
+  return { success: true };
 }

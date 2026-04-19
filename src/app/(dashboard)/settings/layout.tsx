@@ -1,6 +1,6 @@
 import { SettingsTabs } from "@/components/settings-tabs";
 import { getSession } from "@/lib/auth";
-import { hasAnyPermission } from "@/lib/permissions";
+import { getUserPermissions } from "@/lib/permissions";
 import { PERMISSIONS } from "@/lib/permissions.constants";
 import { redirect } from "next/navigation";
 
@@ -12,14 +12,13 @@ export default async function SettingsLayout({
   const session = await getSession();
   if (!session) redirect("/signin");
 
-  const [canSeeGroups, canSeeUsers] = await Promise.all([
-    hasAnyPermission(session.userId, [
-      PERMISSIONS.GROUPS_CREATE,
-      PERMISSIONS.GROUPS_READ,
-      PERMISSIONS.GROUPS_UPDATE,
-    ]),
-    hasAnyPermission(session.userId, [PERMISSIONS.USERS_READ]),
-  ]);
+  const userPermissions = await getUserPermissions(session.userId);
+  const canSeeGroups = [
+    PERMISSIONS.GROUPS_CREATE,
+    PERMISSIONS.GROUPS_READ,
+    PERMISSIONS.GROUPS_UPDATE,
+  ].some((p) => userPermissions.includes(p));
+  const canSeeUsers = userPermissions.includes(PERMISSIONS.USERS_READ);
 
   return (
     <div className="flex gap-8">

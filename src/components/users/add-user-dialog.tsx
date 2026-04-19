@@ -31,9 +31,10 @@ import { GroupTreeCheckbox } from "./group-tree-checkbox";
 
 interface Props {
   groups: SerializedGroup[];
+  onSuccess?: () => void;
 }
 
-export function AddUserDialog({ groups }: Props) {
+export function AddUserDialog({ groups, onSuccess }: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isSearching, setIsSearching] = useState(false);
@@ -85,6 +86,7 @@ export function AddUserDialog({ groups }: Props) {
       }
 
       toast.success("Cập nhật group cho user thành công!");
+      onSuccess?.();
       form.reset();
       setSelectedUser(null);
       setOpen(false);

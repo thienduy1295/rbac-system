@@ -9,9 +9,13 @@ import {
 } from "@/schemas/group.schema";
 import {
   createGroupService,
+  deleteGroupService,
   editGroupService,
   getGroupUsersService,
+  getGroupsPaginatedService,
 } from "@/services/group.service";
+import { PaginatedResult, TableState } from "@/types/table";
+import { SerializedGroup } from "@/types";
 import { requireSession } from "@/lib/auth";
 import { SerializedUser } from "@/types";
 import { serialize } from "@/lib/serialize";
@@ -21,6 +25,13 @@ import {
   hasPermission,
 } from "@/lib/permissions";
 import { PERMISSIONS } from "@/lib/permissions.constants";
+
+export async function getGroupsPaginatedAction(
+  state: TableState,
+): Promise<PaginatedResult<SerializedGroup>> {
+  await requireSession();
+  return serialize(await getGroupsPaginatedService(state)) as PaginatedResult<SerializedGroup>;
+}
 
 type GroupActionResult =
   | { success: true }
@@ -141,4 +152,36 @@ export async function getGroupUsersAction(
   await requireSession();
   const users = await getGroupUsersService(groupId);
   return serialize(users);
+}
+
+export async function deleteGroupAction(
+  groupId: string,
+): Promise<{ success: true } | { success: false; message: string }> {
+  const session = await requireSession();
+
+  // Check quyền
+  const allowed = await hasPermission(
+    session.userId,
+    PERMISSIONS.GROUPS_DELETE,
+  );
+  if (!allowed) {
+    return { success: false, message: "Bạn không có quyền xóa group" };
+  }
+
+  // Không được xóa group mình đang thuộc
+  const canModify = await canModifyGroup(session.userId, groupId);
+  if (!canModify) {
+    return {
+      success: false,
+      message: "Bạn không thể xóa group mình đang thuộc",
+    };
+  }
+
+  const result = await deleteGroupService(groupId);
+
+  if (!result.success) return result;
+
+  revalidatePath("/settings/groups");
+  revalidatePath("/settings/users");
+  return { success: true };
 }

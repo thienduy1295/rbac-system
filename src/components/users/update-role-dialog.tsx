@@ -36,6 +36,7 @@ interface Props {
   currentUserHierarchy: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 export function UpdateRoleDialog({
@@ -44,6 +45,7 @@ export function UpdateRoleDialog({
   currentUserHierarchy,
   open,
   onOpenChange,
+  onSuccess,
 }: Props) {
   const [isPending, startTransition] = useTransition();
 
@@ -67,6 +69,7 @@ export function UpdateRoleDialog({
       }
 
       toast.success("Cập nhật role thành công!");
+      onSuccess?.();
       onOpenChange(false);
     });
   };

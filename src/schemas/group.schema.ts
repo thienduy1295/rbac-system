@@ -21,5 +21,10 @@ export const editGroupSchema = z.object({
   userIds: z.array(z.string()), // ← bỏ optional và default
 });
 
+export const deleteGroupSchema = z.object({
+  groupId: z.string().min(1, "Group ID không hợp lệ"),
+});
+
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type EditGroupInput = z.infer<typeof editGroupSchema>;
+export type DeleteGroupInput = z.infer<typeof deleteGroupSchema>;

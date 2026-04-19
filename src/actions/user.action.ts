@@ -10,9 +10,11 @@ import {
 import {
   addUserToGroupsService,
   getAllRolesService,
+  getUsersPaginatedService,
   searchUsersService,
   updateUserRoleService,
 } from "@/services/user.service";
+import { PaginatedResult, TableState } from "@/types/table";
 import { requireSession } from "@/lib/auth";
 import { hasPermission } from "@/lib/permissions";
 import { PERMISSIONS } from "@/lib/permissions.constants";
@@ -20,6 +22,13 @@ import { SerializedRole, SerializedUser } from "@/types";
 import { serialize } from "@/lib/serialize";
 
 type ActionResult = { success: true } | { success: false; message: string };
+
+export async function getUsersPaginatedAction(
+  state: TableState,
+): Promise<PaginatedResult<SerializedUser>> {
+  await requireSession();
+  return serialize(await getUsersPaginatedService(state)) as PaginatedResult<SerializedUser>;
+}
 
 export async function addUserToGroupsAction(
   formData: AddUserToGroupInput,

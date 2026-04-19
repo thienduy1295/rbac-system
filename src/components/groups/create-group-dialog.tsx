@@ -34,12 +34,14 @@ interface Props {
   permissions: SerializedPermission[];
   userGroups: SerializedGroup[];
   isSuperAdmin: boolean;
+  onSuccess?: () => void;
 }
 
 export function CreateGroupDialog({
   permissions,
   userGroups,
   isSuperAdmin,
+  onSuccess,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
@@ -113,6 +115,7 @@ export function CreateGroupDialog({
       }
 
       toast.success("Tạo group thành công!");
+      onSuccess?.();
       handleClose();
     });
   };

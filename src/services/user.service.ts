@@ -4,7 +4,9 @@ import {
   findUserById,
   findAllUsers,
   updateUserRole,
+  findUsersPaginated,
 } from "@/repositories/user.repository";
+import { PaginatedResult, TableState } from "@/types/table";
 import { findGroupById } from "@/repositories/group.repository";
 import { findAllRoles } from "@/repositories/role.repository";
 import { SerializedRole, SerializedUser } from "@/types";
@@ -14,6 +16,12 @@ type ServiceResult = { success: true } | { success: false; message: string };
 
 export async function getAllUsersService(): Promise<SerializedUser[]> {
   return findAllUsers();
+}
+
+export async function getUsersPaginatedService(
+  state: TableState,
+): Promise<PaginatedResult<SerializedUser>> {
+  return findUsersPaginated(state);
 }
 
 export async function searchUsersService(
@@ -36,11 +44,7 @@ export async function addUserToGroupsService(
     if (!group) return { success: false, message: "Group không tồn tại" };
   }
 
-  // Merge groups mới với groups hiện tại (không xóa groups cũ)
-  const currentGroupIds = user.groups.map((g) => g.toString());
-  const mergedGroupIds = Array.from(new Set([...currentGroupIds, ...groupIds]));
-
-  await updateUserGroups(userId, mergedGroupIds);
+  await updateUserGroups(userId, groupIds);
   return { success: true };
 }
 

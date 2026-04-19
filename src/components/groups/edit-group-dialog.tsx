@@ -31,6 +31,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   canUpdate?: boolean;
   canUpdateUsers?: boolean;
+  onSuccess?: () => void;
 }
 
 export function EditGroupDialog({
@@ -40,11 +41,11 @@ export function EditGroupDialog({
   onOpenChange,
   canUpdate,
   canUpdateUsers,
+  onSuccess,
 }: Props) {
   const initialStep = canUpdate ? 1 : 2;
   const [step, setStep] = useState<1 | 2>(initialStep);
   const [isPending, startTransition] = useTransition();
-  const [currentUserIds, setCurrentUserIds] = useState<string[]>([]);
 
   const isTwoStep = canUpdate && canUpdateUsers;
   const isOneStep =
@@ -74,9 +75,7 @@ export function EditGroupDialog({
   useEffect(() => {
     if (!open) return;
     getGroupUsersAction(group._id).then((users) => {
-      const ids = users.map((u) => u._id);
-      setCurrentUserIds(ids);
-      form.setValue("userIds", ids);
+      form.setValue("userIds", users.map((u) => u._id));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, group._id]);
@@ -142,6 +141,7 @@ export function EditGroupDialog({
       }
 
       toast.success("Cập nhật group thành công!");
+      onSuccess?.();
       onOpenChange(false);
     });
   };
@@ -339,7 +339,6 @@ export function EditGroupDialog({
                     selectedUserIds={field.value ?? []}
                     onChange={field.onChange}
                     disabled={isPending}
-                    excludeUserIds={currentUserIds}
                   />
                 </Field>
               )}
