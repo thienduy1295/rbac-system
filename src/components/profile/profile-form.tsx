@@ -13,6 +13,7 @@ import {
   ChangePasswordInput,
 } from "@/schemas/profile.schema";
 import { updateNameAction, changePasswordAction } from "@/actions/profile.action";
+import { useLocale } from "@/contexts/locale-context";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,8 @@ interface Props {
 export function ProfileForm({ initialName, email }: Props) {
   const [isNamePending, startNameTransition] = useTransition();
   const [isPasswordPending, startPasswordTransition] = useTransition();
+  const { dict } = useLocale();
+  const t = dict.profile;
 
   const nameForm = useForm<UpdateNameInput>({
     resolver: zodResolver(updateNameSchema),
@@ -50,7 +53,7 @@ export function ProfileForm({ initialName, email }: Props) {
         toast.error(result.message);
         return;
       }
-      toast.success("Cập nhật tên thành công!");
+      toast.success(t.updateNameSuccess);
     });
   };
 
@@ -61,7 +64,7 @@ export function ProfileForm({ initialName, email }: Props) {
         toast.error(result.message);
         return;
       }
-      toast.success("Đổi mật khẩu thành công!");
+      toast.success(t.changePasswordSuccess);
       passwordForm.reset();
     });
   };
@@ -71,8 +74,8 @@ export function ProfileForm({ initialName, email }: Props) {
       {/* Update name */}
       <Card className="p-6 space-y-5">
         <div className="space-y-1">
-          <h3 className="font-semibold text-sm">Thông tin cá nhân</h3>
-          <p className="text-xs text-muted-foreground">Cập nhật tên hiển thị</p>
+          <h3 className="font-semibold text-sm">{t.personalInfo}</h3>
+          <p className="text-xs text-muted-foreground">{t.personalInfoSubtitle}</p>
         </div>
 
         <Separator />
@@ -87,10 +90,10 @@ export function ProfileForm({ initialName, email }: Props) {
           </Field>
 
           <Field data-invalid={!!nameForm.formState.errors.name}>
-            <FieldLabel>Tên hiển thị</FieldLabel>
+            <FieldLabel>{t.displayName}</FieldLabel>
             <Input
               {...nameForm.register("name")}
-              placeholder="Nhập tên..."
+              placeholder={t.namePlaceholder}
               disabled={isNamePending}
             />
             {nameForm.formState.errors.name && (
@@ -103,10 +106,10 @@ export function ProfileForm({ initialName, email }: Props) {
               {isNamePending ? (
                 <>
                   <Loader2 size={14} className="animate-spin" />
-                  Đang lưu...
+                  {t.saving}
                 </>
               ) : (
-                "Lưu thay đổi"
+                t.saveChanges
               )}
             </Button>
           </div>
@@ -116,10 +119,8 @@ export function ProfileForm({ initialName, email }: Props) {
       {/* Change password */}
       <Card className="p-6 space-y-5">
         <div className="space-y-1">
-          <h3 className="font-semibold text-sm">Đổi mật khẩu</h3>
-          <p className="text-xs text-muted-foreground">
-            Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số
-          </p>
+          <h3 className="font-semibold text-sm">{t.changePassword}</h3>
+          <p className="text-xs text-muted-foreground">{t.changePasswordSubtitle}</p>
         </div>
 
         <Separator />
@@ -129,7 +130,7 @@ export function ProfileForm({ initialName, email }: Props) {
           className="space-y-4"
         >
           <Field data-invalid={!!passwordForm.formState.errors.currentPassword}>
-            <FieldLabel>Mật khẩu hiện tại</FieldLabel>
+            <FieldLabel>{t.currentPassword}</FieldLabel>
             <Input
               type="password"
               {...passwordForm.register("currentPassword")}
@@ -144,7 +145,7 @@ export function ProfileForm({ initialName, email }: Props) {
           </Field>
 
           <Field data-invalid={!!passwordForm.formState.errors.newPassword}>
-            <FieldLabel>Mật khẩu mới</FieldLabel>
+            <FieldLabel>{t.newPassword}</FieldLabel>
             <Input
               type="password"
               {...passwordForm.register("newPassword")}
@@ -157,7 +158,7 @@ export function ProfileForm({ initialName, email }: Props) {
           </Field>
 
           <Field data-invalid={!!passwordForm.formState.errors.confirmPassword}>
-            <FieldLabel>Xác nhận mật khẩu mới</FieldLabel>
+            <FieldLabel>{t.confirmNewPassword}</FieldLabel>
             <Input
               type="password"
               {...passwordForm.register("confirmPassword")}
@@ -176,10 +177,10 @@ export function ProfileForm({ initialName, email }: Props) {
               {isPasswordPending ? (
                 <>
                   <Loader2 size={14} className="animate-spin" />
-                  Đang lưu...
+                  {t.saving}
                 </>
               ) : (
-                "Đổi mật khẩu"
+                t.changePassword
               )}
             </Button>
           </div>

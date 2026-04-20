@@ -12,12 +12,15 @@ import { signInAction } from "@/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { useLocale } from "@/contexts/locale-context";
 import Link from "next/link";
 
 export default function SignInPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+  const { dict } = useLocale();
+  const t = dict.auth.signin;
 
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
@@ -39,7 +42,7 @@ export default function SignInPage() {
         return;
       }
 
-      toast.success("Đăng nhập thành công!");
+      toast.success(t.successMessage);
       router.push("/dashboard");
       router.refresh();
     });
@@ -47,17 +50,13 @@ export default function SignInPage() {
 
   return (
     <>
-      {/* Header */}
       <div className="space-y-1.5">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Đăng nhập
+          {t.title}
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Nhập thông tin tài khoản để tiếp tục
-        </p>
+        <p className="text-sm text-muted-foreground">{t.subtitle}</p>
       </div>
 
-      {/* Form */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <Controller
           name="email"
@@ -85,12 +84,12 @@ export default function SignInPage() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <div className="flex items-center justify-between">
-                <FieldLabel htmlFor={field.name}>Mật khẩu</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t.password}</FieldLabel>
                 <button
                   type="button"
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Quên mật khẩu?
+                  {t.forgotPassword}
                 </button>
               </div>
               <div className="relative">
@@ -108,7 +107,7 @@ export default function SignInPage() {
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   tabIndex={-1}
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  aria-label={showPassword ? dict.common.hidePassword : dict.common.showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -123,31 +122,31 @@ export default function SignInPage() {
           {isPending ? (
             <>
               <Loader2 size={15} className="animate-spin" />
-              Đang xử lý...
+              {dict.common.processing}
             </>
           ) : (
             <>
               <LogIn size={15} />
-              Đăng nhập
+              {t.submit}
             </>
           )}
         </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Chưa có tài khoản?{" "}
+        {t.noAccount}{" "}
         <Link
           href="/signup"
           className="text-foreground underline underline-offset-2 hover:text-muted-foreground transition-colors"
         >
-          Đăng ký
+          {t.register}
         </Link>
       </p>
 
       <p className="text-center text-xs text-muted-foreground">
-        Bằng cách đăng nhập, bạn đồng ý với{" "}
+        {t.terms}{" "}
         <span className="underline underline-offset-2 cursor-pointer hover:text-foreground transition-colors">
-          Điều khoản sử dụng
+          {t.termsLink}
         </span>
       </p>
     </>

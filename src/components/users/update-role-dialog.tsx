@@ -12,6 +12,7 @@ import {
 } from "@/schemas/user.schema";
 import { updateUserRoleAction } from "@/actions/user.action";
 import { SerializedRole, SerializedUser } from "@/types";
+import { useLocale } from "@/contexts/locale-context";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,13 +49,14 @@ export function UpdateRoleDialog({
   onSuccess,
 }: Props) {
   const [isPending, startTransition] = useTransition();
+  const { dict } = useLocale();
+  const t = dict.users;
 
   const form = useForm<UpdateUserRoleInput>({
     resolver: zodResolver(updateUserRoleSchema),
     defaultValues: { roleId: user.role._id },
   });
 
-  // Chỉ hiện roles thấp hơn current user
   const assignableRoles = roles.filter(
     (r) => r.hierarchy > currentUserHierarchy,
   );
@@ -68,7 +70,7 @@ export function UpdateRoleDialog({
         return;
       }
 
-      toast.success("Cập nhật role thành công!");
+      toast.success(t.updateRoleSuccess);
       onSuccess?.();
       onOpenChange(false);
     });
@@ -78,7 +80,7 @@ export function UpdateRoleDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Cập nhật role</DialogTitle>
+          <DialogTitle>{t.updateRole}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -92,16 +94,16 @@ export function UpdateRoleDialog({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Role</FieldLabel>
+                <FieldLabel>{t.columns.role}</FieldLabel>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={isPending}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn role...">
+                    <SelectValue placeholder={t.selectRole}>
                       {assignableRoles.find((r) => r._id === field.value)
-                        ?.name ?? "Chọn role..."}
+                        ?.name ?? t.selectRole}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -109,7 +111,7 @@ export function UpdateRoleDialog({
                       <SelectItem key={role._id} value={role._id}>
                         <span className="capitalize">{role.name}</span>
                         <span className="text-xs text-muted-foreground ml-2">
-                          (hierarchy: {role.hierarchy})
+                          ({t.hierarchy}: {role.hierarchy})
                         </span>
                       </SelectItem>
                     ))}
@@ -129,16 +131,16 @@ export function UpdateRoleDialog({
               onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
-              Huỷ
+              {dict.common.cancel}
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  Đang lưu...
+                  {dict.common.saving}
                 </>
               ) : (
-                "Lưu"
+                dict.common.save
               )}
             </Button>
           </DialogFooter>

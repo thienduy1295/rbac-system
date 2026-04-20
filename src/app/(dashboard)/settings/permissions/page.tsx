@@ -5,15 +5,20 @@ import { serialize } from "@/lib/serialize";
 import { PermissionList } from "@/components/permission-list";
 import { SerializedPermission } from "@/types";
 import { getUserPermissions } from "@/lib/permissions";
+import { getLocale, getDictionary } from "@/i18n";
 
 export default async function PermissionsPage() {
   const session = await getSession();
   if (!session) redirect("/signin");
 
-  const [allPermissions, userPermissionNames] = await Promise.all([
+  const locale = await getLocale();
+  const [allPermissions, userPermissionNames, dict] = await Promise.all([
     getAllPermissionsService(),
     getUserPermissions(session.userId),
+    getDictionary(locale),
   ]);
+
+  const t = dict.permissions;
 
   const userPermissions: SerializedPermission[] = serialize(
     allPermissions.filter((p) => userPermissionNames.includes(p.name)),
@@ -32,18 +37,16 @@ export default async function PermissionsPage() {
     <div className="space-y-6">
       <div className="space-y-1">
         <h2 className="text-lg font-semibold tracking-tight">
-          Permissions của tôi
+          {t.myPermissions}
         </h2>
         <p className="text-sm text-muted-foreground">
-          Danh sách quyền bạn đang có từ các groups
+          {t.myPermissionsSubtitle}
         </p>
       </div>
 
       {userPermissions.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            Bạn chưa được phân quyền nào
-          </p>
+          <p className="text-sm text-muted-foreground">{t.noPermissions}</p>
         </div>
       ) : (
         <PermissionList grouped={grouped} />

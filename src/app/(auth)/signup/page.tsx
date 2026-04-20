@@ -13,12 +13,15 @@ import { signUpAction } from "@/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { useLocale } from "@/contexts/locale-context";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { dict } = useLocale();
+  const t = dict.auth.signup;
 
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
@@ -38,7 +41,7 @@ export default function SignUpPage() {
         return;
       }
 
-      toast.success("Tạo tài khoản thành công!");
+      toast.success(t.successMessage);
       router.push("/dashboard");
       router.refresh();
     });
@@ -46,30 +49,25 @@ export default function SignUpPage() {
 
   return (
     <>
-      {/* Header */}
       <div className="space-y-1.5">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Tạo tài khoản
+          {t.title}
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Điền thông tin bên dưới để đăng ký
-        </p>
+        <p className="text-sm text-muted-foreground">{t.subtitle}</p>
       </div>
 
-      {/* Form */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        {/* Name */}
         <Controller
           name="name"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Họ và tên</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{t.name}</FieldLabel>
               <Input
                 {...field}
                 id={field.name}
                 type="text"
-                placeholder="Nguyễn Văn A"
+                placeholder={t.namePlaceholder}
                 autoComplete="name"
                 disabled={isPending}
                 aria-invalid={fieldState.invalid}
@@ -79,7 +77,6 @@ export default function SignUpPage() {
           )}
         />
 
-        {/* Email */}
         <Controller
           name="email"
           control={form.control}
@@ -100,13 +97,12 @@ export default function SignUpPage() {
           )}
         />
 
-        {/* Password */}
         <Controller
           name="password"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Mật khẩu</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{t.password}</FieldLabel>
               <div className="relative">
                 <Input
                   {...field}
@@ -122,7 +118,7 @@ export default function SignUpPage() {
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   tabIndex={-1}
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  aria-label={showPassword ? dict.common.hidePassword : dict.common.showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -133,13 +129,12 @@ export default function SignUpPage() {
           )}
         />
 
-        {/* Confirm Password */}
         <Controller
           name="confirmPassword"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Xác nhận mật khẩu</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{t.confirmPassword}</FieldLabel>
               <div className="relative">
                 <Input
                   {...field}
@@ -155,7 +150,7 @@ export default function SignUpPage() {
                   type="button"
                   onClick={() => setShowConfirm((v) => !v)}
                   tabIndex={-1}
-                  aria-label={showConfirm ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  aria-label={showConfirm ? dict.common.hidePassword : dict.common.showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -170,24 +165,24 @@ export default function SignUpPage() {
           {isPending ? (
             <>
               <Loader2 size={15} className="animate-spin" />
-              Đang xử lý...
+              {dict.common.processing}
             </>
           ) : (
             <>
               <UserPlus size={15} />
-              Tạo tài khoản
+              {t.submit}
             </>
           )}
         </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Đã có tài khoản?{" "}
+        {t.hasAccount}{" "}
         <Link
           href="/signin"
           className="text-foreground underline underline-offset-2 hover:text-muted-foreground transition-colors"
         >
-          Đăng nhập
+          {t.signin}
         </Link>
       </p>
     </>

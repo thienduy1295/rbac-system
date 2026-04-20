@@ -9,14 +9,16 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-
-const tabs = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Settings", href: "/settings/permissions", icon: Settings },
-];
+import { useLocale } from "@/contexts/locale-context";
 
 export function NavTabs() {
   const pathname = usePathname();
+  const { dict } = useLocale();
+
+  const tabs = [
+    { label: dict.nav.dashboard, href: "/dashboard", icon: LayoutDashboard },
+    { label: dict.nav.settings, href: "/settings/permissions", icon: Settings },
+  ];
 
   return (
     <NavigationMenu>

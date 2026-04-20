@@ -4,17 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FolderKey, ShieldCheck, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const allTabs = [
-  {
-    label: "Permissions",
-    href: "/settings/permissions",
-    icon: ShieldCheck,
-    key: "permissions",
-  },
-  { label: "Groups", href: "/settings/groups", icon: FolderKey, key: "groups" },
-  { label: "Users", href: "/settings/users", icon: Users, key: "users" },
-];
+import { useLocale } from "@/contexts/locale-context";
 
 interface Props {
   canSeeGroups: boolean;
@@ -23,11 +13,33 @@ interface Props {
 
 export function SettingsTabs({ canSeeGroups, canSeeUsers }: Props) {
   const pathname = usePathname();
+  const { dict } = useLocale();
+
+  const allTabs = [
+    {
+      label: dict.settings.tabs.permissions,
+      href: "/settings/permissions",
+      icon: ShieldCheck,
+      key: "permissions",
+    },
+    {
+      label: dict.settings.tabs.groups,
+      href: "/settings/groups",
+      icon: FolderKey,
+      key: "groups",
+    },
+    {
+      label: dict.settings.tabs.users,
+      href: "/settings/users",
+      icon: Users,
+      key: "users",
+    },
+  ];
 
   const visibleTabs = allTabs.filter((tab) => {
     if (tab.key === "groups") return canSeeGroups;
     if (tab.key === "users") return canSeeUsers;
-    return true; // permissions tab luôn hiện
+    return true;
   });
 
   return (

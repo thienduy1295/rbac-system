@@ -11,6 +11,7 @@ import { editGroupAction } from "@/actions/group.action";
 import { SerializedGroup, SerializedPermission } from "@/types";
 import { GroupUserStep } from "@/components/groups/group-user-step";
 import { getGroupUsersAction } from "@/actions/group.action";
+import { useLocale } from "@/contexts/locale-context";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,9 @@ export function EditGroupDialog({
   const initialStep = canUpdate ? 1 : 2;
   const [step, setStep] = useState<1 | 2>(initialStep);
   const [isPending, startTransition] = useTransition();
+  const { dict } = useLocale();
+  const t = dict.groups;
+  const tc = dict.common;
 
   const isTwoStep = canUpdate && canUpdateUsers;
   const isOneStep =
@@ -95,8 +99,6 @@ export function EditGroupDialog({
 
     const name = form.getValues("name");
     const permissionIds = form.getValues("permissionIds");
-
-    // Validate thủ công
     let hasError = false;
 
     if (!name || name.length < 2) {
@@ -140,7 +142,7 @@ export function EditGroupDialog({
         return;
       }
 
-      toast.success("Cập nhật group thành công!");
+      toast.success(t.editSuccess);
       onSuccess?.();
       onOpenChange(false);
     });
@@ -158,7 +160,7 @@ export function EditGroupDialog({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
-              {step === 1 ? "Chỉnh sửa group" : "Quản lý users"}
+              {step === 1 ? t.editGroupTitle : t.manageUsersTitle}
             </DialogTitle>
 
             {canUpdate && canUpdateUsers && (
@@ -178,13 +180,9 @@ export function EditGroupDialog({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-5"
           onKeyDown={(e) => {
-            // Chặn Enter trigger submit khi đang ở step 1
-            if (e.key === "Enter" && step === 1) {
-              e.preventDefault();
-            }
+            if (e.key === "Enter" && step === 1) e.preventDefault();
           }}
         >
-          {/* ── Step 1 ── */}
           {canUpdate && step === 1 && (
             <>
               <Controller
@@ -192,7 +190,7 @@ export function EditGroupDialog({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>Tên group</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>{t.fields.name}</FieldLabel>
                     <Input
                       {...field}
                       id={field.name}
@@ -212,9 +210,9 @@ export function EditGroupDialog({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>
-                      Mô tả{" "}
+                      {t.fields.description}{" "}
                       <span className="text-muted-foreground font-normal">
-                        (tuỳ chọn)
+                        {tc.optional}
                       </span>
                     </FieldLabel>
                     <Input
@@ -235,7 +233,7 @@ export function EditGroupDialog({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Permissions</FieldLabel>
+                    <FieldLabel>{t.fields.permissions}</FieldLabel>
                     <div className="border border-input rounded-md divide-y divide-border max-h-52 overflow-y-auto">
                       {Object.entries(groupedPermissions).map(
                         ([resource, perms]) => {
@@ -260,12 +258,8 @@ export function EditGroupDialog({
                                     const ids = perms.map((p) => p._id);
                                     field.onChange(
                                       val
-                                        ? Array.from(
-                                            new Set([...field.value, ...ids]),
-                                          )
-                                        : field.value.filter(
-                                            (v) => !ids.includes(v),
-                                          ),
+                                        ? Array.from(new Set([...field.value, ...ids]))
+                                        : field.value.filter((v) => !ids.includes(v)),
                                     );
                                   }}
                                 />
@@ -273,11 +267,7 @@ export function EditGroupDialog({
                                   {resource}
                                 </span>
                                 <span className="text-xs text-muted-foreground ml-auto">
-                                  {
-                                    perms.filter((p) =>
-                                      field.value.includes(p._id),
-                                    ).length
-                                  }
+                                  {perms.filter((p) => field.value.includes(p._id)).length}
                                   /{perms.length}
                                 </span>
                               </label>
@@ -287,24 +277,18 @@ export function EditGroupDialog({
                                   className="flex items-center gap-3 pl-9 pr-3 py-2 hover:bg-accent cursor-pointer transition-colors"
                                 >
                                   <Checkbox
-                                    checked={field.value.includes(
-                                      permission._id,
-                                    )}
+                                    checked={field.value.includes(permission._id)}
                                     disabled={isPending}
                                     onCheckedChange={(val) => {
                                       field.onChange(
                                         val
                                           ? [...field.value, permission._id]
-                                          : field.value.filter(
-                                              (v) => v !== permission._id,
-                                            ),
+                                          : field.value.filter((v) => v !== permission._id),
                                       );
                                     }}
                                   />
                                   <div className="flex flex-col">
-                                    <span className="text-sm">
-                                      {permission.name}
-                                    </span>
+                                    <span className="text-sm">{permission.name}</span>
                                     {permission.description && (
                                       <span className="text-xs text-muted-foreground">
                                         {permission.description}
@@ -327,14 +311,13 @@ export function EditGroupDialog({
             </>
           )}
 
-          {/* ── Step 2 ── */}
           {step === 2 && canUpdateUsers && (
             <Controller
               name="userIds"
               control={form.control}
               render={({ field }) => (
                 <Field>
-                  <FieldLabel>Users trong group</FieldLabel>
+                  <FieldLabel>{t.fields.manageUsers}</FieldLabel>
                   <GroupUserStep
                     selectedUserIds={field.value ?? []}
                     onChange={field.onChange}
@@ -354,14 +337,10 @@ export function EditGroupDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isPending}
                 >
-                  Huỷ
+                  {tc.cancel}
                 </Button>
-                <Button
-                  type="button"
-                  onClick={handleNextStep}
-                  disabled={isPending}
-                >
-                  Tiếp theo <ChevronRight size={15} />
+                <Button type="button" onClick={handleNextStep} disabled={isPending}>
+                  {tc.next} <ChevronRight size={15} />
                 </Button>
               </>
             )}
@@ -374,15 +353,15 @@ export function EditGroupDialog({
                   onClick={() => setStep(1)}
                   disabled={isPending}
                 >
-                  <ChevronLeft size={15} /> Quay lại
+                  <ChevronLeft size={15} /> {tc.back}
                 </Button>
                 <Button type="submit" disabled={isPending}>
                   {isPending ? (
                     <>
-                      <Loader2 size={15} className="animate-spin" /> Đang lưu...
+                      <Loader2 size={15} className="animate-spin" /> {tc.saving}
                     </>
                   ) : (
-                    "Lưu thay đổi"
+                    tc.saveChanges
                   )}
                 </Button>
               </>
@@ -396,15 +375,15 @@ export function EditGroupDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isPending}
                 >
-                  Huỷ
+                  {tc.cancel}
                 </Button>
                 <Button type="submit" disabled={isPending}>
                   {isPending ? (
                     <>
-                      <Loader2 size={15} className="animate-spin" /> Đang lưu...
+                      <Loader2 size={15} className="animate-spin" /> {tc.saving}
                     </>
                   ) : (
-                    "Lưu thay đổi"
+                    tc.saveChanges
                   )}
                 </Button>
               </>

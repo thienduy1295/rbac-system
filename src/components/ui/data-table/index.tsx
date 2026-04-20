@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { ColumnDef, FilterDef, PaginatedResult, TableState } from "@/types/table";
+import { useLocale } from "@/contexts/locale-context";
 
 interface DataTableProps<T> {
   data: PaginatedResult<T>;
@@ -88,13 +89,19 @@ export function DataTable<T extends { _id: string }>({
   onClearFilters,
   onSortChange,
   filters = [],
-  searchPlaceholder = "Tìm kiếm...",
-  emptyMessage = "Không có dữ liệu",
+  searchPlaceholder,
+  emptyMessage,
   actions,
 }: DataTableProps<T>) {
   const [showFilters, setShowFilters] = useState(false);
+  const { dict } = useLocale();
+  const td = dict.dataTable;
+
   const activeFilterCount = Object.values(state.filters).filter(Boolean).length;
   const pageNumbers = getPageNumbers(state.page, data.totalPages);
+
+  const resolvedSearch = searchPlaceholder ?? td.filters;
+  const resolvedEmpty = emptyMessage ?? "—";
 
   return (
     <div className="space-y-4">
@@ -106,7 +113,7 @@ export function DataTable<T extends { _id: string }>({
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <Input
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearch}
             value={state.search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-8"
@@ -121,7 +128,7 @@ export function DataTable<T extends { _id: string }>({
             className={cn(showFilters && "bg-accent")}
           >
             <SlidersHorizontal size={14} />
-            Filters
+            {td.filters}
             {activeFilterCount > 0 && (
               <Badge variant="secondary" className="ml-1 text-xs">
                 {activeFilterCount}
@@ -133,7 +140,7 @@ export function DataTable<T extends { _id: string }>({
         {activeFilterCount > 0 && (
           <Button variant="ghost" size="sm" onClick={onClearFilters}>
             <X size={14} />
-            Xóa filter
+            {td.clearFilters}
           </Button>
         )}
 
@@ -157,12 +164,12 @@ export function DataTable<T extends { _id: string }>({
                     {(val: string | null) =>
                       val
                         ? (filter.options.find((o) => o.value === val)?.label ?? val)
-                        : "Tất cả"
+                        : td.all
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tất cả</SelectItem>
+                  <SelectItem value="">{td.all}</SelectItem>
                   {filter.options.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
@@ -214,7 +221,7 @@ export function DataTable<T extends { _id: string }>({
                   colSpan={columns.length}
                   className="text-center text-muted-foreground py-12"
                 >
-                  {emptyMessage}
+                  {resolvedEmpty}
                 </TableCell>
               </TableRow>
             ) : (
@@ -238,7 +245,7 @@ export function DataTable<T extends { _id: string }>({
       {data.total > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Hiển thị{" "}
+            {td.showing}{" "}
             <span className="font-medium text-foreground">
               {(state.page - 1) * state.pageSize + 1}
             </span>
@@ -248,7 +255,7 @@ export function DataTable<T extends { _id: string }>({
             </span>
             {" / "}
             <span className="font-medium text-foreground">{data.total}</span>
-            {" kết quả"}
+            {" "}{td.results}
           </p>
 
           {data.totalPages > 1 && (

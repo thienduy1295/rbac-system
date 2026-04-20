@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { LogoutButton } from "@/components/logout-button";
 import { NavTabs } from "@/components/nav-tabs";
 import { ProfileButton } from "@/components/profile-button";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { getSession } from "@/lib/auth";
 import { findUserById } from "@/repositories/user.repository";
 
@@ -33,9 +34,11 @@ export default async function DashboardLayout({
           {/* Nav — căn giữa */}
           <NavTabs />
 
-          {/* Profile + Logout — chiếm 1/3 bên phải, căn phải */}
+          {/* Profile + Lang + Logout — chiếm 1/3 bên phải, căn phải */}
           <div className="flex-1 flex justify-end items-center gap-2">
             {user && <ProfileButton name={user.name} />}
+            <div className="w-px h-4 bg-border" />
+            <LanguageSwitcher />
             <div className="w-px h-4 bg-border" />
             <LogoutButton />
           </div>

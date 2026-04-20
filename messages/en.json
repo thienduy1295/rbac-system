@@ -1,0 +1,174 @@
+{
+  "common": {
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "processing": "Processing...",
+    "saving": "Saving...",
+    "next": "Next",
+    "back": "Back",
+    "optional": "(optional)",
+    "creating": "Creating...",
+    "deleting": "Deleting...",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Sign out"
+  },
+  "auth": {
+    "signin": {
+      "title": "Sign in",
+      "subtitle": "Enter your account credentials to continue",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up",
+      "terms": "By signing in, you agree to our",
+      "termsLink": "Terms of Service",
+      "successMessage": "Signed in successfully!"
+    },
+    "signup": {
+      "title": "Create account",
+      "subtitle": "Fill in the details below to register",
+      "name": "Full name",
+      "namePlaceholder": "John Doe",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signin": "Sign in",
+      "successMessage": "Account created successfully!"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Hello,",
+    "role": "role:"
+  },
+  "settings": {
+    "heading": "Settings",
+    "tabs": {
+      "permissions": "Permissions",
+      "groups": "Groups",
+      "users": "Users"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Manage users and add them to groups",
+    "searchPlaceholder": "Search by name or email...",
+    "emptyMessage": "No users found",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "groups": "Groups"
+    },
+    "noGroup": "No groups",
+    "addToGroup": "Add user to group",
+    "updateRole": "Update role",
+    "updateRoleSuccess": "Role updated successfully!",
+    "addGroupSuccess": "Groups updated successfully!",
+    "searchUserLabel": "Search user",
+    "searchUserPlaceholder": "Search by name or email...",
+    "selectRole": "Select role...",
+    "filterByRole": "Role",
+    "hierarchy": "hierarchy"
+  },
+  "groups": {
+    "title": "Groups",
+    "subtitle": "Create groups and configure permissions",
+    "searchPlaceholder": "Search by name or description...",
+    "emptyMessage": "No groups found",
+    "columns": {
+      "name": "Group name",
+      "parent": "Parent",
+      "description": "Description",
+      "permissions": "Permissions"
+    },
+    "createGroup": "Create group",
+    "createGroupTitle": "Create new group",
+    "addUsersTitle": "Add users to group",
+    "editGroupTitle": "Edit group",
+    "manageUsersTitle": "Manage users",
+    "editAction": "Edit",
+    "deleteGroup": "Delete group",
+    "deleteTitle": "Delete group",
+    "deleteDesc": "Are you sure you want to delete group",
+    "deleteWarning": "? All sub-groups will also be deleted. This action cannot be undone.",
+    "deleting": "Deleting...",
+    "deleteAction": "Delete",
+    "createSuccess": "Group created successfully!",
+    "editSuccess": "Group updated successfully!",
+    "deleteSuccess": "Group deleted successfully!",
+    "filterByType": "Group type",
+    "filterRoot": "Root (no parent)",
+    "fields": {
+      "parentGroup": "Create under group",
+      "parentGroupPlaceholder": "Select parent group...",
+      "name": "Group name",
+      "namePlaceholder": "e.g. Marketing Team",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of this group",
+      "permissions": "Permissions",
+      "addUsers": "Add users",
+      "manageUsers": "Users in group"
+    }
+  },
+  "groupUser": {
+    "searchPlaceholder": "Search by name or email...",
+    "selected": "Selected",
+    "selectedUnit": "user(s)",
+    "clearAll": "Clear all",
+    "notFound": "No users found",
+    "hint": "Enter name or email to search"
+  },
+  "dataTable": {
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "all": "All",
+    "showing": "Showing",
+    "results": "results"
+  },
+  "branding": {
+    "tagline1": "Smart access control,",
+    "tagline2": "comprehensive governance.",
+    "description": "A flexible hierarchical access control system to manage your organization easily and securely.",
+    "groupLevels": "N levels",
+    "permissionsLabel": "Granular"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "subtitle": "List of permissions in the system",
+    "myPermissions": "My Permissions",
+    "myPermissionsSubtitle": "List of permissions you have from your groups",
+    "noPermissions": "You have not been assigned any permissions"
+  },
+  "groupTree": {
+    "noGroups": "No groups yet",
+    "subGroups": "sub-groups"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your personal information and security",
+    "personalInfo": "Personal information",
+    "personalInfoSubtitle": "Update your display name",
+    "displayName": "Display name",
+    "namePlaceholder": "Enter name...",
+    "saveChanges": "Save changes",
+    "saving": "Saving...",
+    "changePassword": "Change password",
+    "changePasswordSubtitle": "Password must be at least 8 characters with 1 uppercase and 1 number",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "updateNameSuccess": "Name updated successfully!",
+    "changePasswordSuccess": "Password changed successfully!"
+  }
+}

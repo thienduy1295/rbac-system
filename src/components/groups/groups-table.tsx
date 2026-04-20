@@ -28,6 +28,7 @@ import { ColumnDef, FilterDef, PaginatedResult } from "@/types/table";
 import { EditGroupDialog } from "@/components/groups/edit-group-dialog";
 import { CreateGroupDialog } from "@/components/groups/create-group-dialog";
 import { deleteGroupAction, getGroupsPaginatedAction } from "@/actions/group.action";
+import { useLocale } from "@/contexts/locale-context";
 
 const MAX_BADGES = 3;
 
@@ -76,6 +77,8 @@ export function GroupsTable({
   const [editingGroup, setEditingGroup] = useState<SerializedGroup | null>(null);
   const [deletingGroup, setDeletingGroup] = useState<SerializedGroup | null>(null);
   const [isPendingDelete, startDeleteTransition] = useTransition();
+  const { dict } = useLocale();
+  const t = dict.groups;
 
   const { data, state, isPending, setPage, setSearch, setFilter, clearFilters, setSort, refresh } =
     useDataTable<SerializedGroup>({
@@ -91,9 +94,9 @@ export function GroupsTable({
   const filters: FilterDef[] = [
     {
       key: "parentGroup",
-      label: "Loại group",
+      label: t.filterByType,
       options: [
-        { label: "Root (không có parent)", value: "root" },
+        { label: t.filterRoot, value: "root" },
         ...parentOptions,
       ],
     },
@@ -104,7 +107,7 @@ export function GroupsTable({
   const columns: ColumnDef<SerializedGroup>[] = [
     {
       key: "name",
-      header: "Tên group",
+      header: t.columns.name,
       sortable: true,
       render: (g) => (
         <div className="flex items-center gap-1.5">
@@ -115,7 +118,7 @@ export function GroupsTable({
     },
     {
       key: "parentGroup",
-      header: "Parent",
+      header: t.columns.parent,
       render: (g) =>
         g.parentGroup ? (
           <Badge variant="outline" className="text-xs font-normal">
@@ -127,14 +130,14 @@ export function GroupsTable({
     },
     {
       key: "description",
-      header: "Mô tả",
+      header: t.columns.description,
       render: (g) => (
         <span className="text-muted-foreground">{g.description || "—"}</span>
       ),
     },
     {
       key: "permissions",
-      header: "Permissions",
+      header: t.columns.permissions,
       render: (g) => <PermissionBadges permissions={g.permissions} />,
     },
     ...(showActions
@@ -152,7 +155,7 @@ export function GroupsTable({
                   {(canUpdate || canUpdateUsers) && (
                     <DropdownMenuItem onClick={() => setEditingGroup(g)}>
                       <Pencil size={14} />
-                      Chỉnh sửa
+                      {t.editAction}
                     </DropdownMenuItem>
                   )}
                   {canUpdate && canDelete && <DropdownMenuSeparator />}
@@ -162,7 +165,7 @@ export function GroupsTable({
                       variant="destructive"
                     >
                       <Trash2 size={14} />
-                      Xóa group
+                      {t.deleteGroup}
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -181,7 +184,7 @@ export function GroupsTable({
         toast.error(result.message);
         return;
       }
-      toast.success("Xóa group thành công!");
+      toast.success(t.deleteSuccess);
       setDeletingGroup(null);
       refresh();
     });
@@ -200,8 +203,8 @@ export function GroupsTable({
         onClearFilters={clearFilters}
         onSortChange={setSort}
         filters={filters}
-        searchPlaceholder="Tìm tên hoặc mô tả..."
-        emptyMessage="Chưa có group nào"
+        searchPlaceholder={t.searchPlaceholder}
+        emptyMessage={t.emptyMessage}
         actions={
           canCreate ? (
             <CreateGroupDialog
@@ -232,18 +235,19 @@ export function GroupsTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Xóa group</AlertDialogTitle>
+            <AlertDialogTitle>{t.deleteTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc muốn xóa group{" "}
+              {t.deleteDesc}{" "}
               <span className="font-medium text-foreground">
                 {deletingGroup?.name}
               </span>
-              ? Tất cả group con bên trong cũng sẽ bị xóa. Hành động này không
-              thể hoàn tác.
+              {t.deleteWarning}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPendingDelete}>Huỷ</AlertDialogCancel>
+            <AlertDialogCancel disabled={isPendingDelete}>
+              {dict.common.cancel}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isPendingDelete}
@@ -251,10 +255,10 @@ export function GroupsTable({
             >
               {isPendingDelete ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" /> Đang xóa...
+                  <Loader2 size={14} className="animate-spin" /> {t.deleting}
                 </>
               ) : (
-                "Xóa"
+                t.deleteAction
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -3,6 +3,7 @@
 import { SerializedGroup } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/contexts/locale-context";
 
 interface Props {
   groups: SerializedGroup[];
@@ -24,9 +25,7 @@ function buildTree(groups: SerializedGroup[]): TreeNode[] {
   }
 
   for (const group of groups) {
-    // parentGroup là SerializedGroupRef | undefined (sau refactor, không còn | string)
     const parentId = group.parentGroup?._id;
-
     if (parentId && map[parentId]) {
       map[parentId].children.push(map[group._id]);
     } else {
@@ -43,12 +42,14 @@ function TreeNodeItem({
   selectedGroupIds,
   onChange,
   disabled,
+  subGroupsLabel,
 }: {
   node: TreeNode;
   depth: number;
   selectedGroupIds: string[];
   onChange: (groupIds: string[]) => void;
   disabled?: boolean;
+  subGroupsLabel: string;
 }) {
   const checked = selectedGroupIds.includes(node._id);
 
@@ -104,7 +105,7 @@ function TreeNodeItem({
         </div>
         {node.children.length > 0 && (
           <span className="text-xs text-muted-foreground ml-auto">
-            {node.children.length} sub-groups
+            {node.children.length} {subGroupsLabel}
           </span>
         )}
       </label>
@@ -117,6 +118,7 @@ function TreeNodeItem({
           selectedGroupIds={selectedGroupIds}
           onChange={onChange}
           disabled={disabled}
+          subGroupsLabel={subGroupsLabel}
         />
       ))}
     </div>
@@ -129,12 +131,14 @@ export function GroupTreeCheckbox({
   onChange,
   disabled,
 }: Props) {
+  const { dict } = useLocale();
+  const t = dict.groupTree;
   const tree = buildTree(groups);
 
   if (groups.length === 0) {
     return (
       <p className="text-sm text-muted-foreground text-center py-4">
-        Chưa có group nào
+        {t.noGroups}
       </p>
     );
   }
@@ -149,6 +153,7 @@ export function GroupTreeCheckbox({
           selectedGroupIds={selectedGroupIds}
           onChange={onChange}
           disabled={disabled}
+          subGroupsLabel={t.subGroups}
         />
       ))}
     </div>

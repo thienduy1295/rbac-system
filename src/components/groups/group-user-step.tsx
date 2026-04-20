@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { SerializedUser } from "@/types";
 import { searchUsersAction } from "@/actions/user.action";
+import { useLocale } from "@/contexts/locale-context";
 
 interface Props {
   selectedUserIds: string[];
@@ -24,6 +25,8 @@ export function GroupUserStep({
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SerializedUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const { dict } = useLocale();
+  const t = dict.groupUser;
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
@@ -32,9 +35,7 @@ export function GroupUserStep({
       return;
     }
     setIsSearching(true);
-
     const results = await searchUsersAction(query, excludeUserIds);
-
     setSearchResults(results);
     setIsSearching(false);
   };
@@ -47,19 +48,17 @@ export function GroupUserStep({
     );
   };
 
-  // Merge search results với selected users để luôn hiện selected users
   const displayUsers = searchQuery.trim() ? searchResults : [];
 
   return (
     <div className="space-y-3">
-      {/* Search */}
       <div className="relative">
         <Search
           size={14}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
         <Input
-          placeholder="Tìm theo tên hoặc email..."
+          placeholder={t.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           className="pl-8"
@@ -67,21 +66,21 @@ export function GroupUserStep({
         />
       </div>
 
-      {/* Selected users count */}
       {selectedUserIds.length > 0 && (
         <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-          <span>Đã chọn {selectedUserIds.length} user</span>
+          <span>
+            {t.selected} {selectedUserIds.length} {t.selectedUnit}
+          </span>
           <button
             type="button"
             onClick={() => onChange([])}
             className="hover:text-foreground transition-colors"
           >
-            Bỏ chọn tất cả
+            {t.clearAll}
           </button>
         </div>
       )}
 
-      {/* Results list */}
       <div className="border border-input rounded-md divide-y divide-border max-h-56 overflow-y-auto">
         {isSearching ? (
           <div className="flex items-center justify-center py-6">
@@ -117,9 +116,7 @@ export function GroupUserStep({
           })
         ) : (
           <div className="py-6 text-center text-sm text-muted-foreground">
-            {searchQuery.trim()
-              ? "Không tìm thấy user nào"
-              : "Nhập tên hoặc email để tìm user"}
+            {searchQuery.trim() ? t.notFound : t.hint}
           </div>
         )}
       </div>

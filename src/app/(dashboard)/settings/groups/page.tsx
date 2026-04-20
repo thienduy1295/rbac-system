@@ -9,17 +9,20 @@ import { serialize } from "@/lib/serialize";
 import { GroupsTable } from "@/components/groups/groups-table";
 import { checkPermission, getUserContext } from "@/lib/permissions";
 import { PERMISSIONS } from "@/lib/permissions.constants";
+import { getLocale, getDictionary } from "@/i18n";
 
 export default async function GroupsPage() {
   const session = await getSession();
   if (!session) redirect("/signin");
 
-  const [initialData, allGroups, allPermissions, { permissionNames: userPermissionNames, groupIds: userGroupIds, isSuperAdmin }] =
+  const locale = await getLocale();
+  const [initialData, allGroups, allPermissions, { permissionNames: userPermissionNames, groupIds: userGroupIds, isSuperAdmin }, dict] =
     await Promise.all([
       getGroupsPaginatedService({ page: 1, pageSize: 10, search: "", filters: {} }).then(serialize),
       getAllGroupsService().then(serialize),
       getAllPermissionsService(),
       getUserContext(session.userId),
+      getDictionary(locale),
     ]);
 
   const assignablePermissions = serialize(
@@ -35,10 +38,8 @@ export default async function GroupsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight">Groups</h2>
-        <p className="text-sm text-muted-foreground">
-          Tạo group và phân quyền cho từng group
-        </p>
+        <h2 className="text-lg font-semibold tracking-tight">{dict.groups.title}</h2>
+        <p className="text-sm text-muted-foreground">{dict.groups.subtitle}</p>
       </div>
 
       <GroupsTable

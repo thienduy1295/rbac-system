@@ -9,16 +9,19 @@ import { serialize } from "@/lib/serialize";
 import { UsersTable } from "@/components/users/users-table";
 import { getUserPermissions } from "@/lib/permissions";
 import { PERMISSIONS } from "@/lib/permissions.constants";
+import { getLocale, getDictionary } from "@/i18n";
 
 export default async function UsersPage() {
   const session = await getSession();
   if (!session) redirect("/signin");
 
-  const [initialData, groups, roles, userPermissions] = await Promise.all([
+  const locale = await getLocale();
+  const [initialData, groups, roles, userPermissions, dict] = await Promise.all([
     getUsersPaginatedService({ page: 1, pageSize: 10, search: "", filters: {} }).then(serialize),
     getAllGroupsService().then(serialize),
     getAllRolesService(),
     getUserPermissions(session.userId),
+    getDictionary(locale),
   ]);
 
   const canUpdateRole = userPermissions.includes(PERMISSIONS.USERS_UPDATE);
@@ -30,10 +33,8 @@ export default async function UsersPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight">Users</h2>
-        <p className="text-sm text-muted-foreground">
-          Quản lý user và thêm user vào group
-        </p>
+        <h2 className="text-lg font-semibold tracking-tight">{dict.users.title}</h2>
+        <p className="text-sm text-muted-foreground">{dict.users.subtitle}</p>
       </div>
 
       <UsersTable

@@ -1,0 +1,174 @@
+{
+  "common": {
+    "save": "Lưu",
+    "saveChanges": "Lưu thay đổi",
+    "cancel": "Huỷ",
+    "delete": "Xoá",
+    "edit": "Chỉnh sửa",
+    "processing": "Đang xử lý...",
+    "saving": "Đang lưu...",
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "optional": "(tuỳ chọn)",
+    "creating": "Đang tạo...",
+    "deleting": "Đang xóa...",
+    "hidePassword": "Ẩn mật khẩu",
+    "showPassword": "Hiện mật khẩu"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Đăng xuất"
+  },
+  "auth": {
+    "signin": {
+      "title": "Đăng nhập",
+      "subtitle": "Nhập thông tin tài khoản để tiếp tục",
+      "password": "Mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "register": "Đăng ký",
+      "terms": "Bằng cách đăng nhập, bạn đồng ý với",
+      "termsLink": "Điều khoản sử dụng",
+      "successMessage": "Đăng nhập thành công!"
+    },
+    "signup": {
+      "title": "Tạo tài khoản",
+      "subtitle": "Điền thông tin bên dưới để đăng ký",
+      "name": "Họ và tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "password": "Mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "submit": "Tạo tài khoản",
+      "hasAccount": "Đã có tài khoản?",
+      "signin": "Đăng nhập",
+      "successMessage": "Tạo tài khoản thành công!"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Xin chào,",
+    "role": "role:"
+  },
+  "settings": {
+    "heading": "Settings",
+    "tabs": {
+      "permissions": "Permissions",
+      "groups": "Groups",
+      "users": "Users"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Quản lý user và thêm user vào group",
+    "searchPlaceholder": "Tìm tên hoặc email...",
+    "emptyMessage": "Chưa có user nào",
+    "columns": {
+      "name": "Tên",
+      "email": "Email",
+      "role": "Role",
+      "groups": "Groups"
+    },
+    "noGroup": "Chưa có group",
+    "addToGroup": "Thêm user vào group",
+    "updateRole": "Cập nhật role",
+    "updateRoleSuccess": "Cập nhật role thành công!",
+    "addGroupSuccess": "Cập nhật group cho user thành công!",
+    "searchUserLabel": "Tìm user",
+    "searchUserPlaceholder": "Tìm theo tên hoặc email...",
+    "selectRole": "Chọn role...",
+    "filterByRole": "Role",
+    "hierarchy": "hierarchy"
+  },
+  "groups": {
+    "title": "Groups",
+    "subtitle": "Tạo group và phân quyền cho từng group",
+    "searchPlaceholder": "Tìm tên hoặc mô tả...",
+    "emptyMessage": "Chưa có group nào",
+    "columns": {
+      "name": "Tên group",
+      "parent": "Parent",
+      "description": "Mô tả",
+      "permissions": "Permissions"
+    },
+    "createGroup": "Tạo group",
+    "createGroupTitle": "Tạo group mới",
+    "addUsersTitle": "Thêm users vào group",
+    "editGroupTitle": "Chỉnh sửa group",
+    "manageUsersTitle": "Quản lý users",
+    "editAction": "Chỉnh sửa",
+    "deleteGroup": "Xóa group",
+    "deleteTitle": "Xóa group",
+    "deleteDesc": "Bạn có chắc muốn xóa group",
+    "deleteWarning": "? Tất cả group con bên trong cũng sẽ bị xóa. Hành động này không thể hoàn tác.",
+    "deleting": "Đang xóa...",
+    "deleteAction": "Xóa",
+    "createSuccess": "Tạo group thành công!",
+    "editSuccess": "Cập nhật group thành công!",
+    "deleteSuccess": "Xóa group thành công!",
+    "filterByType": "Loại group",
+    "filterRoot": "Root (không có parent)",
+    "fields": {
+      "parentGroup": "Tạo dưới group",
+      "parentGroupPlaceholder": "Chọn group cha...",
+      "name": "Tên group",
+      "namePlaceholder": "vd: Marketing Team",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Mô tả ngắn về group này",
+      "permissions": "Permissions",
+      "addUsers": "Thêm users",
+      "manageUsers": "Users trong group"
+    }
+  },
+  "groupUser": {
+    "searchPlaceholder": "Tìm theo tên hoặc email...",
+    "selected": "Đã chọn",
+    "selectedUnit": "user",
+    "clearAll": "Bỏ chọn tất cả",
+    "notFound": "Không tìm thấy user nào",
+    "hint": "Nhập tên hoặc email để tìm user"
+  },
+  "dataTable": {
+    "filters": "Bộ lọc",
+    "clearFilters": "Xóa filter",
+    "all": "Tất cả",
+    "showing": "Hiển thị",
+    "results": "kết quả"
+  },
+  "branding": {
+    "tagline1": "Phân quyền thông minh,",
+    "tagline2": "kiểm soát toàn diện.",
+    "description": "Hệ thống phân cấp quyền truy cập linh hoạt, giúp quản trị tổ chức dễ dàng và bảo mật.",
+    "groupLevels": "N cấp",
+    "permissionsLabel": "Chi tiết"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "subtitle": "Danh sách các quyền trong hệ thống",
+    "myPermissions": "Permissions của tôi",
+    "myPermissionsSubtitle": "Danh sách quyền bạn đang có từ các groups",
+    "noPermissions": "Bạn chưa được phân quyền nào"
+  },
+  "groupTree": {
+    "noGroups": "Chưa có group nào",
+    "subGroups": "nhóm con"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "subtitle": "Quản lý thông tin cá nhân và bảo mật",
+    "personalInfo": "Thông tin cá nhân",
+    "personalInfoSubtitle": "Cập nhật tên hiển thị",
+    "displayName": "Tên hiển thị",
+    "namePlaceholder": "Nhập tên...",
+    "saveChanges": "Lưu thay đổi",
+    "saving": "Đang lưu...",
+    "changePassword": "Đổi mật khẩu",
+    "changePasswordSubtitle": "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmNewPassword": "Xác nhận mật khẩu mới",
+    "updateNameSuccess": "Cập nhật tên thành công!",
+    "changePasswordSuccess": "Đổi mật khẩu thành công!"
+  }
+}

@@ -1,10 +1,21 @@
 import { ShieldCheck } from "lucide-react";
+import { getLocale, getDictionary } from "@/i18n";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const t = dict.branding;
+
+  const stats = [
+    { label: "Roles", value: "∞" },
+    { label: "Groups", value: t.groupLevels },
+    { label: "Permissions", value: t.permissionsLabel },
+  ];
+
   return (
     <div className="min-h-screen flex">
       {/* ── Left panel: branding ── */}
@@ -33,21 +44,16 @@ export default function AuthLayout({
         <div className="relative z-10 space-y-6">
           <div className="space-y-4">
             <p className="text-2xl font-light text-white leading-snug tracking-tight">
-              Phân quyền thông minh,
+              {t.tagline1}
               <br />
-              <span className="text-indigo-400">kiểm soát toàn diện.</span>
+              <span className="text-indigo-400">{t.tagline2}</span>
             </p>
             <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
-              Hệ thống phân cấp quyền truy cập linh hoạt, giúp quản trị tổ chức
-              dễ dàng và bảo mật.
+              {t.description}
             </p>
           </div>
           <div className="flex gap-8 pt-4 border-t border-zinc-800">
-            {[
-              { label: "Roles", value: "∞" },
-              { label: "Groups", value: "N cấp" },
-              { label: "Permissions", value: "Chi tiết" },
-            ].map((s) => (
+            {stats.map((s) => (
               <div key={s.label}>
                 <p className="text-white font-semibold text-lg">{s.value}</p>
                 <p className="text-zinc-500 text-xs mt-0.5">{s.label}</p>

@@ -11,6 +11,7 @@ import { ColumnDef, FilterDef, PaginatedResult } from "@/types/table";
 import { UpdateRoleDialog } from "@/components/users/update-role-dialog";
 import { AddUserDialog } from "@/components/users/add-user-dialog";
 import { getUsersPaginatedAction } from "@/actions/user.action";
+import { useLocale } from "@/contexts/locale-context";
 
 interface Props {
   initialData: PaginatedResult<SerializedUser>;
@@ -32,6 +33,8 @@ export function UsersTable({
   currentUserHierarchy,
 }: Props) {
   const [editingUser, setEditingUser] = useState<SerializedUser | null>(null);
+  const { dict } = useLocale();
+  const t = dict.users;
 
   const {
     data,
@@ -52,7 +55,7 @@ export function UsersTable({
   const filters: FilterDef[] = [
     {
       key: "role",
-      label: "Role",
+      label: t.filterByRole,
       options: roles.map((r) => ({ label: r.name, value: r._id })),
     },
   ];
@@ -60,19 +63,19 @@ export function UsersTable({
   const columns: ColumnDef<SerializedUser>[] = [
     {
       key: "name",
-      header: "Tên",
+      header: t.columns.name,
       sortable: true,
       render: (u) => <span className="font-medium">{u.name}</span>,
     },
     {
       key: "email",
-      header: "Email",
+      header: t.columns.email,
       sortable: true,
       render: (u) => <span className="text-muted-foreground">{u.email}</span>,
     },
     {
       key: "role",
-      header: "Role",
+      header: t.columns.role,
       render: (u) => (
         <Badge variant="outline" className="text-xs capitalize">
           {u.role?.name}
@@ -81,7 +84,7 @@ export function UsersTable({
     },
     {
       key: "groups",
-      header: "Groups",
+      header: t.columns.groups,
       render: (u) =>
         u.groups?.length > 0 ? (
           <div className="flex flex-wrap gap-1">
@@ -92,7 +95,7 @@ export function UsersTable({
             ))}
           </div>
         ) : (
-          <span className="text-muted-foreground text-xs">Chưa có group</span>
+          <span className="text-muted-foreground text-xs">{t.noGroup}</span>
         ),
     },
     ...(canUpdateRole
@@ -134,8 +137,8 @@ export function UsersTable({
         onClearFilters={clearFilters}
         onSortChange={setSort}
         filters={filters}
-        searchPlaceholder="Tìm tên hoặc email..."
-        emptyMessage="Chưa có user nào"
+        searchPlaceholder={t.searchPlaceholder}
+        emptyMessage={t.emptyMessage}
         actions={
           canUpdateGroups ? (
             <AddUserDialog groups={groups} onSuccess={refresh} />
