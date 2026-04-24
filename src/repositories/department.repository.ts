@@ -91,3 +91,8 @@ export async function findDepartmentsByParentId(
   await connectDB();
   return Department.find({ parentDepartment: new Types.ObjectId(parentId) });
 }
+
+export async function countDepartments(): Promise<number> {
+  await connectDB();
+  return Department.countDocuments();
+}

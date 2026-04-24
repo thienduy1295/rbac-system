@@ -159,3 +159,8 @@ export async function findAllDescendantIds(groupId: string): Promise<string[]> {
 
   return ids;
 }
+
+export async function countGroups(): Promise<number> {
+  await connectDB();
+  return Group.countDocuments();
+}

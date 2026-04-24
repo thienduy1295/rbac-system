@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -100,9 +99,7 @@ function DepartmentNode({
   return (
     <div>
       <div
-        className={cn(
-          "flex items-center gap-2 py-2.5 pr-3 hover:bg-accent/50 rounded-lg transition-colors group",
-        )}
+        className="flex items-center gap-2 py-2.5 pr-3 hover:bg-accent/50 transition-colors group border-b border-border last:border-b-0"
         style={{ paddingLeft: `${depth * 24 + 12}px` }}
       >
         {/* Toggle expand */}
@@ -252,7 +249,7 @@ export function DepartmentTree({
 
   return (
     <>
-      <div className="rounded-lg border border-border divide-y divide-border overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         {tree.map((node) => (
           <DepartmentNode
             key={node._id}

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Chakra_Petch } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { LocaleProvider } from "@/contexts/locale-context";
+import { ThemeProvider } from "@/components/theme-provider";
 import { getLocale, getDictionary } from "@/i18n";
 
-const ChakraPetchSans = Chakra_Petch({
-  weight: "400",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -26,13 +27,16 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${ChakraPetchSans.className} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <LocaleProvider locale={locale} dict={dict}>
-          {children}
-          <Toaster position="top-right" richColors />
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider locale={locale} dict={dict}>
+            {children}
+            <Toaster position="top-right" richColors />
+          </LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -18,53 +18,56 @@ export default async function AuthLayout({
 
   return (
     <div className="min-h-screen flex">
-      {/* ── Left panel: branding ── */}
-      <div className="hidden lg:flex lg:w-1/2 bg-zinc-950 flex-col justify-between p-12 relative overflow-hidden">
+      {/* Left branding panel */}
+      <div className="relative hidden overflow-hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-between bg-[oklch(0.13_0.01_265)] p-12">
+        {/* Subtle grid overlay */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="pointer-events-none absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage: `linear-gradient(#fff 1px, transparent 1px),
-                              linear-gradient(90deg, #fff 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(oklch(1_0_0) 1px, transparent 1px),
+                              linear-gradient(90deg, oklch(1_0_0) 1px, transparent 1px)`,
             backgroundSize: "48px 48px",
           }}
         />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-indigo-600 opacity-20 blur-3xl" />
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute -bottom-40 -left-40 h-125 w-125 rounded-full bg-primary opacity-[0.15] blur-3xl" />
+        <div className="pointer-events-none absolute -top-20 right-0 h-75 w-75 rounded-full bg-primary opacity-[0.08] blur-3xl" />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center">
-            <ShieldCheck size={16} className="text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <ShieldCheck size={16} className="text-primary-foreground" />
           </div>
-          <span className="text-white font-semibold tracking-tight">
+          <span className="font-semibold tracking-tight text-white">
             RBAC System
           </span>
         </div>
 
-        {/* Quote */}
-        <div className="relative z-10 space-y-6">
-          <div className="space-y-4">
-            <p className="text-2xl font-light text-white leading-snug tracking-tight">
+        {/* Quote + stats */}
+        <div className="relative z-10 space-y-8">
+          <div className="space-y-3">
+            <p className="text-2xl font-light leading-snug tracking-tight text-white">
               {t.tagline1}
               <br />
-              <span className="text-indigo-400">{t.tagline2}</span>
+              <span className="text-primary">{t.tagline2}</span>
             </p>
-            <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
+            <p className="max-w-xs text-sm leading-relaxed text-white/50">
               {t.description}
             </p>
           </div>
-          <div className="flex gap-8 pt-4 border-t border-zinc-800">
+          <div className="flex gap-8 border-t border-white/10 pt-6">
             {stats.map((s) => (
               <div key={s.label}>
-                <p className="text-white font-semibold text-lg">{s.value}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">{s.label}</p>
+                <p className="text-lg font-semibold text-white">{s.value}</p>
+                <p className="mt-0.5 text-xs text-white/40">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── Right panel: form (children) ── */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-background">
+      {/* Right form panel */}
+      <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
         <div className="w-full max-w-sm space-y-8">{children}</div>
       </div>
     </div>

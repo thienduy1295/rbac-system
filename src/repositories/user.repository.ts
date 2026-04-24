@@ -145,6 +145,11 @@ export async function findUserByIdWithPassword(
   return User.findById(id).select("+password");
 }
 
+export async function countUsers(): Promise<number> {
+  await connectDB();
+  return User.countDocuments();
+}
+
 export async function findUsersPaginated(
   state: TableState,
 ): Promise<PaginatedResult<SerializedUser>> {
