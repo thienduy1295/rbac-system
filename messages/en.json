@@ -18,7 +18,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "settings": "Settings",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "departments": "Departments"
   },
   "auth": {
     "signin": {

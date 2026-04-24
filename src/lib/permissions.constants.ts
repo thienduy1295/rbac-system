@@ -13,6 +13,12 @@ export const PERMISSIONS = {
 
   // Permissions
   PERMISSIONS_READ: "permissions:read",
+
+  // Departments
+  DEPARTMENTS_CREATE: "departments:create",
+  DEPARTMENTS_READ: "departments:read",
+  DEPARTMENTS_UPDATE: "departments:update",
+  DEPARTMENTS_DELETE: "departments:delete",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];

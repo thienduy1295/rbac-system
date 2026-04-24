@@ -19,7 +19,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 
-  const protectedRoutes = ["/dashboard", "/settings"];
+  const protectedRoutes = ["/dashboard", "/settings", "/departments"];
   const authRoutes = ["/signin", "/signup"];
 
   const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings } from "lucide-react";
+import { Building2, LayoutDashboard, Settings } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -17,6 +17,7 @@ export function NavTabs() {
 
   const tabs = [
     { label: dict.nav.dashboard, href: "/dashboard", icon: LayoutDashboard },
+    { label: dict.nav.departments, href: "/departments", icon: Building2 },
     { label: dict.nav.settings, href: "/settings/permissions", icon: Settings },
   ];
 
@@ -27,7 +28,9 @@ export function NavTabs() {
           const isActive =
             href === "/dashboard"
               ? pathname === href
-              : pathname.startsWith("/settings");
+              : pathname.startsWith(
+                  href === "/settings/permissions" ? "/settings" : href,
+                );
 
           return (
             <NavigationMenuItem key={href}>

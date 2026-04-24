@@ -18,7 +18,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "settings": "Settings",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "departments": "Departments"
   },
   "auth": {
     "signin": {

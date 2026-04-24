@@ -45,3 +45,16 @@ export type SerializedRole = {
   description?: string;
   hierarchy: number;
 };
+
+export type SerializedDepartment = {
+  _id: string;
+  name: string;
+  description?: string;
+  parentDepartment?: { _id: string; name: string } | string;
+  manager?: { _id: string; name: string; email: string };
+  linkedGroup?: { _id: string; name: string };
+  createdBy: { _id: string; name: string; email: string };
+  updatedBy?: { _id: string; name: string; email: string };
+  createdAt: string;
+  updatedAt: string;
+};

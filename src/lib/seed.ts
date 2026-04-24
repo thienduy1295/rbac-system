@@ -92,6 +92,30 @@ export async function seedRoles() {
       resource: "permissions",
       action: "read",
     },
+    {
+      name: PERMISSIONS.DEPARTMENTS_CREATE,
+      description: "Tạo phòng ban",
+      resource: "departments",
+      action: "create",
+    },
+    {
+      name: PERMISSIONS.DEPARTMENTS_READ,
+      description: "Xem phòng ban",
+      resource: "departments",
+      action: "read",
+    },
+    {
+      name: PERMISSIONS.DEPARTMENTS_UPDATE,
+      description: "Sửa phòng ban",
+      resource: "departments",
+      action: "update",
+    },
+    {
+      name: PERMISSIONS.DEPARTMENTS_DELETE,
+      description: "Xóa phòng ban",
+      resource: "departments",
+      action: "delete",
+    },
   ];
 
   for (const permission of permissions) {
